@@ -25,10 +25,10 @@ const chatRoutes = require('./routes/chatRoutes'); // Hugging Face enabled
 app.use('/api', chatRoutes);
 
 // Check if Hugging Face token is loaded
-console.log("✅ HUGGINGFACE_API_TOKEN loaded?", !!process.env.HUGGINGFACE_API_TOKEN);
+console.log("HUGGINGFACE_API_TOKEN loaded?", !!process.env.HUGGINGFACE_API_TOKEN);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
