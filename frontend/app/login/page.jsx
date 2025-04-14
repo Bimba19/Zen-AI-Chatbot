@@ -15,6 +15,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; 
       const res = await axios.post("https://zen-ai-chatbot.onrender.com/api/auth/login", formData);
       console.log("User logged in:", res.data);
       localStorage.setItem("token", res.data.token);

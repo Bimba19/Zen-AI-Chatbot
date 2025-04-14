@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -45,8 +45,9 @@ export default function ChatPage() {
 
     try {
       const token = localStorage.getItem("token");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
       const res = await axios.post(
-        "https://zen-ai-chatbot.onrender.com/api/chat",
+        `${backendUrl}/api/chat`,
         { message: input },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -62,7 +63,8 @@ export default function ChatPage() {
   const fetchHistory = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("https://zen-ai-chatbot.onrender.com/api/chat/history", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
+      const res = await axios.get(`${backendUrl}/api/chat/history`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setHistory(res.data.history);
@@ -76,7 +78,8 @@ export default function ChatPage() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`https://zen-ai-chatbot.onrender.com/api/chat/history/${id}`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
+      await axios.delete(`${backendUrl}/api/chat/history/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchHistory();
