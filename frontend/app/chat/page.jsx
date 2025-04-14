@@ -46,7 +46,7 @@ export default function ChatPage() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5000/api/chat",
+        "https://zen-ai-chatbot.onrender.com/api/chat",
         { message: input },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -62,7 +62,7 @@ export default function ChatPage() {
   const fetchHistory = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/chat/history", {
+      const res = await axios.get("https://zen-ai-chatbot.onrender.com/api/chat/history", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setHistory(res.data.history);
@@ -76,7 +76,7 @@ export default function ChatPage() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/chat/history/${id}`, {
+      await axios.delete(`https://zen-ai-chatbot.onrender.com/api/chat/history/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchHistory();
