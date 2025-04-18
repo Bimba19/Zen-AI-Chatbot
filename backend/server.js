@@ -24,6 +24,7 @@ const dietTips = [
   "Don't skip meals. Having balanced meals regularly helps maintain energy levels.",
 ];
 
+<<<<<<< HEAD
 const importanceOfHealthyDiet = [
   "A healthy diet boosts your immune system and reduces the risk of chronic diseases.",
   "Eating a balanced diet helps maintain healthy weight and improves overall well-being.",
@@ -224,4 +225,25 @@ ZenBot:
 
 }).catch((err) => {
   console.error("Server failed to start due to MongoDB connection issues:", err);
+=======
+// Basic route
+app.get('/', (req, res) => {
+  res.send('Chatbot API is running');
+});
+
+// Routes
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+const chatRoutes = require('./routes/chatRoutes'); // Hugging Face enabled
+app.use('/api', chatRoutes);
+
+// Check if Hugging Face token is loaded
+console.log("HUGGINGFACE_API_TOKEN loaded?", !!process.env.HUGGINGFACE_API_TOKEN);
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+>>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
 });

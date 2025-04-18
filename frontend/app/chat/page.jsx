@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -89,10 +89,18 @@ export default function ChatPage() {
     }
 
     try {
+<<<<<<< HEAD
       const token = getToken();
       const res = await axios.post(
         "http://localhost:5000/api/chat",
         { message: msg },
+=======
+      const token = localStorage.getItem("token");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
+      const res = await axios.post(
+        `${backendUrl}/api/chat`,
+        { message: input },
+>>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const botReply = { role: "bot", text: res.data.reply };
@@ -109,8 +117,14 @@ export default function ChatPage() {
   const fetchHistory = async () => {
     setShowHistory(true);
     try {
+<<<<<<< HEAD
       const token = getToken();
       const res = await axios.get("http://localhost:5000/api/chat/history", {
+=======
+      const token = localStorage.getItem("token");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
+      const res = await axios.get(`${backendUrl}/api/chat/history`, {
+>>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
         headers: { Authorization: `Bearer ${token}` },
       });
       setHistory(res.data.history);
@@ -123,8 +137,14 @@ export default function ChatPage() {
   // Delete a chat history entry
   const handleDelete = async (id) => {
     try {
+<<<<<<< HEAD
       const token = getToken();
       await axios.delete(`http://localhost:5000/api/chat/history/${id}`, {
+=======
+      const token = localStorage.getItem("token");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use backend URL from env
+      await axios.delete(`${backendUrl}/api/chat/history/${id}`, {
+>>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
         headers: { Authorization: `Bearer ${token}` },
       });
       setHistory((prev) => prev.filter((item) => item._id !== id));
