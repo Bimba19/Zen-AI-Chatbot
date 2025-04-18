@@ -9,14 +9,12 @@ const mongoURI = isRender
 
 const connectDB = async () => {
   try {
-<<<<<<< HEAD
-    await mongoose.connect(process.env.MONGO_URI); // No need for the deprecated options
-=======
+    // Connect to MongoDB using the appropriate URI
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
->>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
+
     console.log('MongoDB connected');
   } catch (error) {
     console.error(error.message);
