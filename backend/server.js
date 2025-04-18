@@ -16,8 +16,6 @@ const healthTips = [
   "How can I reduce stress effectively?",
 ];
 
-// Other predefined response arrays here...
-
 // Express server setup
 connectDB().then(() => {
   app.use(cors());
