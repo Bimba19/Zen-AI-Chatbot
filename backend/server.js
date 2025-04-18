@@ -16,77 +16,19 @@ const healthTips = [
   "How can I reduce stress effectively?",
 ];
 
-const dietTips = [
-  "Eating a variety of nutrient-rich foods helps your body function at its best.",
-  "Drinking plenty of water throughout the day keeps you hydrated and supports healthy digestion.",
-  "Limiting processed foods and eating whole, fresh foods is key to a healthy diet.",
-  "Including more fruits and vegetables in your meals can provide essential vitamins and minerals.",
-  "Don't skip meals. Having balanced meals regularly helps maintain energy levels.",
-];
-
-<<<<<<< HEAD
-const importanceOfHealthyDiet = [
-  "A healthy diet boosts your immune system and reduces the risk of chronic diseases.",
-  "Eating a balanced diet helps maintain healthy weight and improves overall well-being.",
-  "Proper nutrition is essential for mental clarity, energy, and mood regulation.",
-  "A healthy diet supports good skin, hair, and a stronger body.",
-];
-
-const quotes = [
-  "Let food be thy medicine and medicine be thy food. — Hippocrates",
-  "You are what you eat. — Anonymous",
-  "Healthy eating is a way of life, so it’s important to establish routines that are simple, realistic, and ultimately livable. — Horace",
-  "A healthy diet is a solution to many of our health-care problems. — T. Colin Campbell",
-];
-
-const dietPlans = {
-  children: [
-    "Breakfast: Oatmeal with berries, scrambled eggs, and milk.",
-    "Lunch: Whole grain sandwich with lean turkey, lettuce, and tomato.",
-    "Dinner: Grilled chicken with brown rice and steamed vegetables.",
-    "Snacks: Carrot sticks, apple slices with peanut butter, or low-fat yogurt.",
-  ],
-  teenagers: [
-    "Breakfast: Whole grain toast with avocado and eggs, smoothie with spinach and banana.",
-    "Lunch: Quinoa salad with grilled chicken, spinach, and a lemon dressing.",
-    "Dinner: Grilled salmon, roasted potatoes, and broccoli.",
-    "Snacks: Handful of nuts, mixed fruit, or yogurt parfait with granola.",
-  ],
-  adults: [
-    "Breakfast: Whole wheat toast with avocado and scrambled eggs, a side of mixed fruit.",
-    "Lunch: Grilled chicken breast with quinoa and steamed veggies.",
-    "Dinner: Baked salmon with a side of brown rice and sautéed spinach.",
-    "Snacks: Carrot sticks, hummus, or a small handful of almonds.",
-  ],
-  seniors: [
-    "Breakfast: Steel-cut oatmeal with chia seeds and fruit.",
-    "Lunch: Grilled chicken or fish with a side of leafy greens and roasted sweet potatoes.",
-    "Dinner: Grilled vegetables with lean protein like chicken or turkey.",
-    "Snacks: Low-fat cheese, fruit, or a handful of walnuts.",
-  ],
-};
-
-const exerciseInfo = [
-  "Regular exercise improves mental health, boosts energy levels, and helps with weight management.",
-  "Aim for at least 150 minutes of moderate-intensity exercise per week for good health.",
-  "Physical activity improves sleep quality and reduces the risk of chronic diseases like heart disease.",
-];
-
-const mentalHealthInfo = [
-  "Taking time for self-care and practicing mindfulness can significantly reduce stress.",
-  "Talking to someone you trust and seeking professional support can improve mental well-being.",
-  "Regular exercise and a balanced diet also play important roles in mental health.",
-];
+// Other predefined response arrays here...
 
 // Express server setup
 connectDB().then(() => {
   app.use(cors());
   app.use(express.json());
 
+  // Basic route
   app.get('/', (req, res) => {
     res.send('Chatbot API is running');
   });
 
+  // Chat route
   app.post('/api/chat', authenticate, async (req, res) => {
     try {
       const userMessage = req.body.message.trim().toLowerCase();  // Convert message to lowercase
@@ -97,15 +39,7 @@ connectDB().then(() => {
       // Predefined Responses for Keywords (updated to handle more cases)
       const predefinedResponses = {
         "health": healthTips.join(' '),
-        "diet": dietTips.join(' '),
-        "importance of healthy diet": importanceOfHealthyDiet.join(' '),
-        "quotes": quotes.join(' '),
-        "diet plan for children": dietPlans.children.join(' '),
-        "diet plan for teenagers": dietPlans.teenagers.join(' '),
-        "diet plan for adults": dietPlans.adults.join(' '),
-        "diet plan for seniors": dietPlans.seniors.join(' '),
-        "exercise info": exerciseInfo.join(' '),
-        "mental health info": mentalHealthInfo.join(' '),
+        // Other predefined responses here...
       };
 
       // Check if the user message matches any predefined responses
@@ -125,7 +59,7 @@ connectDB().then(() => {
         return res.json({ reply: finalReply });
       }
 
-      // If no predefined response, fallback to AI model (HuggingFace or others)
+      // Fallback to HuggingFace API
       const huggingFaceKey = process.env.HUGGINGFACE_API_KEY;
       const huggingFaceModel = process.env.HUGGINGFACE_MODEL || "tiny-gpt2";
 
@@ -187,6 +121,7 @@ ZenBot:
     }
   });
 
+  // History route
   app.get('/api/chat/history', authenticate, async (req, res) => {
     try {
       const history = await Message.find({ user: req.user.id }).sort({ timestamp: -1 });
@@ -197,6 +132,7 @@ ZenBot:
     }
   });
 
+  // Delete history route
   app.delete('/api/chat/history/:id', authenticate, async (req, res) => {
     try {
       const deleted = await Message.findOneAndDelete({
@@ -215,8 +151,12 @@ ZenBot:
     }
   });
 
+  // Authentication and other routes
   const authRoutes = require('./routes/authRoutes');
   app.use('/api/auth', authRoutes);
+
+  const chatRoutes = require('./routes/chatRoutes'); // Hugging Face enabled
+  app.use('/api', chatRoutes);
 
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
@@ -225,25 +165,4 @@ ZenBot:
 
 }).catch((err) => {
   console.error("Server failed to start due to MongoDB connection issues:", err);
-=======
-// Basic route
-app.get('/', (req, res) => {
-  res.send('Chatbot API is running');
-});
-
-// Routes
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
-
-const chatRoutes = require('./routes/chatRoutes'); // Hugging Face enabled
-app.use('/api', chatRoutes);
-
-// Check if Hugging Face token is loaded
-console.log("HUGGINGFACE_API_TOKEN loaded?", !!process.env.HUGGINGFACE_API_TOKEN);
-
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
->>>>>>> 81cceb668298ee272b2c609e3aca49158a5bb33f
 });
