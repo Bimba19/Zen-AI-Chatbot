@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authMiddleware');
-const {
-  chatHandler,
-  getHistory,
-  deleteMessage
-} = require('../controllers/chatController');
+const { handleChat, getHistory, deleteMessage } = require('../controllers/chatController');
 
-router.post('/chat', authenticate, chatHandler);
+// Define routes
+router.post('/chat', authenticate, handleChat);  // <-- updated to handleChat
 router.get('/chat/history', authenticate, getHistory);
 router.delete('/chat/history/:id', authenticate, deleteMessage);
 
