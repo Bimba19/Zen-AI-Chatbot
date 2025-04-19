@@ -8,7 +8,7 @@ const Message = require('./models/Message');
 
 const app = express();
 
-// Predefined Responses
+// Health Tips Predefined Responses
 const healthTips = [
   "A healthy outside starts from the inside. — Robert Urich",
   "Mental health is just as important as physical health.",
@@ -16,12 +16,12 @@ const healthTips = [
   "How can I reduce stress effectively?",
 ];
 
-// Express server setup
+// Start server only after DB connects
 connectDB().then(() => {
   app.use(cors());
   app.use(express.json());
 
-  // Basic route
+  // Root check
   app.get('/', (req, res) => {
     res.send('Chatbot API is running');
   });
@@ -29,20 +29,22 @@ connectDB().then(() => {
   // Chat route
   app.post('/api/chat', authenticate, async (req, res) => {
     try {
-      const userMessage = req.body.message.trim().toLowerCase();  // Convert message to lowercase
+      const userMessage = req.body.message.trim().toLowerCase();
       if (!userMessage) {
         return res.status(400).json({ reply: "Message is required." });
       }
 
-      // Predefined Responses for Keywords (updated to handle more cases)
       const predefinedResponses = {
         "health": healthTips.join(' '),
-        // Other predefined responses here...
+        "diet": "A balanced diet includes fruits, vegetables, proteins, and whole grains.",
+        "importance of healthy diet": "A healthy diet boosts immunity, energy levels, and overall well-being.",
+        "exercise": "Daily exercise improves strength, flexibility, and mental health.",
+        "mental health": "Prioritize sleep, connect with loved ones, and seek help when needed.",
+        "quote": "Believe you can and you're halfway there. — Theodore Roosevelt"
       };
 
-      // Check if the user message matches any predefined responses
       const matchingResponse = Object.keys(predefinedResponses).find(key =>
-        userMessage.includes(key)  // Check if the user input contains any of the predefined keys
+        userMessage.includes(key)
       );
 
       if (matchingResponse) {
@@ -57,9 +59,9 @@ connectDB().then(() => {
         return res.json({ reply: finalReply });
       }
 
-      // Fallback to HuggingFace API
+      // HuggingFace fallback
       const huggingFaceKey = process.env.HUGGINGFACE_API_KEY;
-      const huggingFaceModel = process.env.HUGGINGFACE_MODEL || "tiny-gpt2";
+      const huggingFaceModel = process.env.HUGGINGFACE_MODEL || "sshleifer/tiny-gpt2";
 
       if (!huggingFaceKey) {
         console.error("HUGGINGFACE_API_KEY is missing in .env");
@@ -67,8 +69,6 @@ connectDB().then(() => {
       }
 
       const endpoint = `https://api-inference.huggingface.co/models/${huggingFaceModel}`;
-
-      // Enhanced Prompt for AI Response
       const prompt = `
 You are ZenBot, a helpful and polite assistant that gives short, clear, and relevant replies to users.
 
@@ -89,7 +89,6 @@ ZenBot:
       );
 
       let aiReply;
-
       if (Array.isArray(response.data)) {
         aiReply = response.data[0]?.generated_text;
       } else {
@@ -112,14 +111,11 @@ ZenBot:
         console.error("Status:", err.response.status);
         console.error("Data:", err.response.data);
       }
-
-      res.status(503).json({
-        reply: "The AI is currently unavailable. Please try again later."
-      });
+      res.status(503).json({ reply: "The AI is currently unavailable. Please try again later." });
     }
   });
 
-  // History route
+  // Chat History
   app.get('/api/chat/history', authenticate, async (req, res) => {
     try {
       const history = await Message.find({ user: req.user.id }).sort({ timestamp: -1 });
@@ -130,7 +126,7 @@ ZenBot:
     }
   });
 
-  // Delete history route
+  // Delete message from history
   app.delete('/api/chat/history/:id', authenticate, async (req, res) => {
     try {
       const deleted = await Message.findOneAndDelete({
@@ -149,18 +145,19 @@ ZenBot:
     }
   });
 
-  // Authentication and other routes
+  // Auth and other routes
   const authRoutes = require('./routes/authRoutes');
   app.use('/api/auth', authRoutes);
 
-  const chatRoutes = require('./routes/chatRoutes'); // Hugging Face enabled
+  const chatRoutes = require('./routes/chatRoutes');
   app.use('/api', chatRoutes);
 
+  // ✅ PORT logic for Render and local
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
   });
 
 }).catch((err) => {
-  console.error("Server failed to start due to MongoDB connection issues:", err);
+  console.error("❌ Server failed to start due to MongoDB connection issues:", err);
 });
